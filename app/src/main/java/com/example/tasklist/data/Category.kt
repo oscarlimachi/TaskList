@@ -1,4 +1,4 @@
-package com.example.tasklist
+package com.example.tasklist.data
 
 data class Category(
     val id: Long,

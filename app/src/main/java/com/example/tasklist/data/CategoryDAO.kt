@@ -1,9 +1,10 @@
-package com.example.tasklist
+package com.example.tasklist.data
 
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
+import com.example.tasklist.utils.DatabaseManager
 
 
 class CategoryDAO (private val context: Context) {
@@ -20,7 +21,7 @@ class CategoryDAO (private val context: Context) {
     //***Start the action of a database***
 
     //INSERT
-    fun insert(category:Category){
+    fun insert(category: Category){
         open()
         try {
             val values = ContentValues().apply {
