@@ -1,16 +1,24 @@
 package com.example.tasklist.adapters
 
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.tasklist.data.Category
 import com.example.tasklist.databinding.ItemCategoryBinding
 
-class CategoryAdapter(val items: List<Category>): Adapter<CategoryViewHolder>(){
+class CategoryAdapter(
+    var items: List<Category>,
+    val onItemClick: (position: Int) -> Unit,
+    val onItemEdit: (position: Int) -> Unit,
+    val onItemDelete: (position: Int) -> Unit
+    ): Adapter<CategoryViewHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
-        val binding = ItemCategoryBinding.inflate(LayoutInflater.from(parent.context))
+        val binding = ItemCategoryBinding.inflate(LayoutInflater.from(parent.context), parent,false)
+        return CategoryViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -18,7 +26,25 @@ class CategoryAdapter(val items: List<Category>): Adapter<CategoryViewHolder>(){
     }
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
-        TODO("Not yet implemented")
+       val category = items[position]
+        holder.render(category)
+        holder.itemView.setOnClickListener {
+            onItemClick(position)
+        }
+        holder.itemView.setOnClickListener {
+            onItemEdit(position)
+        }
+        holder.itemView.setOnClickListener {
+            onItemDelete(position)
+        }
+    }
+    fun updateItems(items: List<Category>){
+        this.items=items
+        notifyDataSetChanged()
     }
 }
-class CategoryViewHolder(val binding: ItemCategoryBinding):ViewHolder(binding.root){}
+class CategoryViewHolder(val binding: ItemCategoryBinding):ViewHolder(binding.root){
+    fun render(category: Category){
+        binding.titleTextView.text = category.title
+    }
+}
