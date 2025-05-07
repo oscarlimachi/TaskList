@@ -43,8 +43,11 @@ class MainActivity : AppCompatActivity() {
             //push category
         }, {
             //push edit
-        }, {
+        }, {position ->
             //push delete
+            val category = categoryList[position]
+            categoryDAO.delete(category)
+            loadData()
         })
         binding.recyclerview.adapter = adapter
         binding.recyclerview.layoutManager =

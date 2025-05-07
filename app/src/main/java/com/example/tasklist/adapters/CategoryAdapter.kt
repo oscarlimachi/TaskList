@@ -31,10 +31,10 @@ class CategoryAdapter(
         holder.itemView.setOnClickListener {
             onItemClick(position)
         }
-        holder.itemView.setOnClickListener {
+        holder.binding.editButton.setOnClickListener {
             onItemEdit(position)
         }
-        holder.itemView.setOnClickListener {
+        holder.binding.deleteButton.setOnClickListener {
             onItemDelete(position)
         }
     }
