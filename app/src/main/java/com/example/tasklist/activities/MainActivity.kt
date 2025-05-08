@@ -48,9 +48,7 @@ class MainActivity : AppCompatActivity() {
             showCategoryDialog(category)
         }, {position ->
             //push delete
-            val category = categoryList[position]
-            categoryDAO.delete(category)
-            loadData()
+
         })
         binding.recyclerview.adapter = adapter
         binding.recyclerview.layoutManager =
@@ -93,6 +91,11 @@ class MainActivity : AppCompatActivity() {
             .setIcon(dialogIcon)
             .show()
 
+    }
+    fun showDeleteConfirmation(){
+        val category = categoryList[position]
+        categoryDAO.delete(category)
+        loadData()
     }
     fun loadData(){
         categoryList = categoryDAO.findAll()
