@@ -43,6 +43,9 @@ class MainActivity : AppCompatActivity() {
             //push category
         }, {
             //push edit
+            position ->
+            val category = categoryList[position]
+            showCategoryDialog(category)
         }, {position ->
             //push delete
             val category = categoryList[position]
@@ -53,26 +56,41 @@ class MainActivity : AppCompatActivity() {
         binding.recyclerview.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.addCategoryButton.setOnClickListener {
-            showCategoryDialog()
+            showCategoryDialog(Category(-1L,""))
         }
 
     }
 
 
-    fun showCategoryDialog() {
+    fun showCategoryDialog(category: Category) {
         val dialogBinding = DialogCreateCategoryBinding.inflate(layoutInflater)
 
+        dialogBinding.titleEditText.setText(category.title)
+
+        var dialogTitle = ""
+        var dialogIcon = 0
+        if (category.id != -1L){
+            dialogTitle = "Edit Category"
+            dialogIcon = R.drawable.ic_edit
+        }else {
+            dialogTitle = "Create Category"
+            dialogIcon = R.drawable.ic_add
+        }
+
         MaterialAlertDialogBuilder(this)
-            .setTitle("Create Category")
+            .setTitle(dialogTitle)
             .setView(dialogBinding.root)
             .setPositiveButton(android.R.string.ok, {dialog, which ->
-                val title = dialogBinding.titleEditText.text.toString()
-                val category = Category(-1,title)
-                categoryDAO.insert(category)
+                category.title = dialogBinding.titleEditText.text.toString()
+                if (category.id !=-1L){
+                    categoryDAO.update(category)
+                }else{
+                    categoryDAO.insert(category)
+                }
                 loadData()
             })
             .setNegativeButton(android.R.string.cancel,null)
-            .setIcon(R.drawable.ic_add)
+            .setIcon(dialogIcon)
             .show()
 
     }
