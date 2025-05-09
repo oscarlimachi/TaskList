@@ -48,10 +48,7 @@ class MainActivity : AppCompatActivity() {
             showCategoryDialog(category)
         }, { //push delete
             position ->
-            val category = categoryList[position]
-            categoryDAO.delete(category)
-            loadData()
-
+            showDeleteConfirmationDialog(position)
         })
         binding.recyclerview.adapter = adapter
         binding.recyclerview.layoutManager =
@@ -65,7 +62,6 @@ class MainActivity : AppCompatActivity() {
 
     fun showCategoryDialog(category: Category) {
         val dialogBinding = DialogCreateCategoryBinding.inflate(layoutInflater)
-
         dialogBinding.titleEditText.setText(category.title)
 
         var dialogTitle = ""
@@ -95,6 +91,22 @@ class MainActivity : AppCompatActivity() {
             .show()
 
     }
+    fun showDeleteConfirmationDialog(position:Int){
+        val category = categoryList[position]
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Delete category")
+            .setMessage("Are you sure?")
+            .setPositiveButton(android.R.string.ok,{ dialog, which ->
+                categoryDAO.delete(category)
+                loadData()
+            })
+            .setNegativeButton(android.R.string.cancel, null)
+            .setIcon(R.drawable.ic_delete)
+            .show()
+            }
+
+
     fun loadData(){
         categoryList = categoryDAO.findAll()
         adapter.updateItems(categoryList)
