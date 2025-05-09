@@ -57,6 +57,8 @@ class MainActivity : AppCompatActivity() {
             showCategoryDialog(Category(-1L,""))
         }
 
+
+
     }
 
 
