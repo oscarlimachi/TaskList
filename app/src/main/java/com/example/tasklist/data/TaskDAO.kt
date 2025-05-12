@@ -5,14 +5,14 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import com.example.tasklist.utils.DatabaseManager
-import kotlinx.coroutines.selects.select
+
 
 class TaskDAO(private val context: Context) {
     private lateinit var db: SQLiteDatabase
-    fun open(){
+    private fun open(){
         db = DatabaseManager(context).writableDatabase
     }
-    fun close(){
+    private fun close(){
         db.close()
     }
     //create actions
@@ -70,9 +70,85 @@ class TaskDAO(private val context: Context) {
 
     }
     //Find by Id
-    fun findById(id:Long){
+    fun findById(id: Long) : Task?{
         open()
-        val position
+        var task: Task? = null
 
+    try {
+        val projection = arrayOf(
+            Task.COLUMN_NAME_ID,
+            Task.COLUMN_NAME_TITLE,
+            Task.COLUMN_NAME_DONE,
+            Task.COLUMN_NAME_CATEGORY)
+
+        val selection ="${Task.COLUMN_NAME_ID} = $id"
+        val cursor = db.query(
+            Task.TABLE_NAME,
+            projection,
+            selection,
+            null,
+            null,
+            null,
+            null)
+        if (cursor.moveToNext()){
+            val id = cursor.getLong(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_ID))
+            val title = cursor.getString(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_TITLE))
+            val done = cursor.getInt(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_DONE)) != 0
+            val categoryId = cursor.getLong(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_CATEGORY))
+
+            val category = CategoryDAO(context).findById(categoryId)!!
+            task = Task(id, title, done, category)
+        }
+        cursor.close()
+    } catch (e:Exception){
+        e.printStackTrace()
+    } finally {
+        close()
     }
+
+        return task
+    }
+    //Find all
+    fun findAll(): List<Task>{
+        open()
+        val taskList: MutableList<Task> = mutableListOf()
+        try {
+
+            val projection = arrayOf(
+                Task.COLUMN_NAME_ID,
+                Task.COLUMN_NAME_TITLE,
+                Task.COLUMN_NAME_DONE,
+                Task.COLUMN_NAME_CATEGORY
+            )
+            //val selection ="id = task.id
+            val selection = null
+            val cursor = db.query(
+                Task.TABLE_NAME,
+                projection,
+                selection,
+                null,
+                null,
+                null,
+                null,)
+            while (cursor.moveToNext()){
+                val id = cursor.getLong(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_ID))
+                val title = cursor.getString(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_TITLE))
+                val done = cursor.getInt(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_DONE)) !=0
+                val categoryId = cursor.getLong(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_CATEGORY))
+
+                val category = CategoryDAO(context).findById(categoryId)!!
+                val task = Task(id,title,done,category)
+                taskList.add(task)
+            }
+            cursor.close()
+        } catch (e:Exception){
+            e.printStackTrace()
+        } finally {
+            close()
+        }
+        return taskList
+    }
+
+
+
 }
