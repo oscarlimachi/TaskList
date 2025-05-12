@@ -72,6 +72,7 @@ class TaskDAO(private val context: Context) {
     //Find by Id
     fun findById(id:Long){
         open()
+        val position
 
     }
 }
