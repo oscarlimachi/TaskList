@@ -148,6 +148,45 @@ class TaskDAO(private val context: Context) {
         }
         return taskList
     }
+    fun findByCategoryId(category: Category): List<Task>{
+        open()
+        val taskList: MutableList<Task> = mutableListOf()
+        try {
+
+            val projection = arrayOf(
+                Task.COLUMN_NAME_ID,
+                Task.COLUMN_NAME_TITLE,
+                Task.COLUMN_NAME_DONE,
+                Task.COLUMN_NAME_CATEGORY
+            )
+            //val selection ="id = task.id
+            val selection = "${Category.COLUMN_NAME_ID}=${category.id}"
+            val cursor = db.query(
+                Task.TABLE_NAME,
+                projection,
+                selection,
+                null,
+                null,
+                null,
+                null,)
+            while (cursor.moveToNext()){
+                val id = cursor.getLong(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_ID))
+                val title = cursor.getString(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_TITLE))
+                val done = cursor.getInt(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_DONE)) !=0
+                val categoryId = cursor.getLong(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_CATEGORY))
+
+                val category = CategoryDAO(context).findById(categoryId)!!
+                val task = Task(id,title,done,category)
+                taskList.add(task)
+            }
+            cursor.close()
+        } catch (e:Exception){
+            e.printStackTrace()
+        } finally {
+            close()
+        }
+        return taskList
+    }
 
 
 
