@@ -1,5 +1,6 @@
 package com.example.tasklist.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.activity.enableEdgeToEdge
@@ -41,6 +42,12 @@ class MainActivity : AppCompatActivity() {
 
         adapter = CategoryAdapter(categoryList, {
             //push category
+            position ->
+            val category = categoryList[position]
+            val intent = Intent(this, TaskActivity::class.java)
+            intent.putExtra("CATEGORY_ID",category.id)
+            startActivity(intent)
+
         }, {
             //push edit
             position ->
@@ -107,8 +114,6 @@ class MainActivity : AppCompatActivity() {
             .setIcon(R.drawable.ic_delete)
             .show()
             }
-
-
     fun loadData(){
         categoryList = categoryDAO.findAll()
         adapter.updateItems(categoryList)
