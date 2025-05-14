@@ -1,6 +1,7 @@
 package com.example.tasklist.activities
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.widget.Adapter
 import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
@@ -34,7 +35,6 @@ class TaskListActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivityListTaskBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setContentView(R.layout.activity_list_task)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -50,7 +50,7 @@ class TaskListActivity : AppCompatActivity() {
 
         adapter = TaskAdapter(taskList, {
             //click on item
-        },{
+        }, {
                 //click on checkbox
         })
         binding.recyclerview.adapter = adapter
@@ -58,7 +58,15 @@ class TaskListActivity : AppCompatActivity() {
 
         supportActionBar?.title = category.title
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-
        }
+    //button for back
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            android.R.id.home ->{
+                finish()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
 }
