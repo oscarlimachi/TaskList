@@ -13,7 +13,7 @@
         android:text="Title:">
     </TextView>
     <EditText
-        android:id="@+id/titleEditText"
+        android:id="@+id/titleTaskEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="¿Qué hay que hacer hoy?">

@@ -148,7 +148,7 @@ class TaskDAO(private val context: Context) {
         }
         return taskList
     }
-    fun findByCategoryId(category: Category): List<Task>{
+    fun findAllByCategoryId(category: Category): List<Task>{
         open()
         val taskList: MutableList<Task> = mutableListOf()
         try {
@@ -160,7 +160,7 @@ class TaskDAO(private val context: Context) {
                 Task.COLUMN_NAME_CATEGORY
             )
             //val selection ="id = task.id
-            val selection = "${Category.COLUMN_NAME_ID}=${category.id}"
+            val selection = "${Task.COLUMN_NAME_CATEGORY}=${category.id}"
             val cursor = db.query(
                 Task.TABLE_NAME,
                 projection,

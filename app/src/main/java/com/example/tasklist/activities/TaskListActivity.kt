@@ -1,5 +1,6 @@
 package com.example.tasklist.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Adapter
@@ -28,13 +29,15 @@ class TaskListActivity : AppCompatActivity() {
     lateinit var taskList: List<Task>
 
     lateinit var adapter: TaskAdapter
-    lateinit var recyclerView: RecyclerView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         binding = ActivityListTaskBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -46,7 +49,7 @@ class TaskListActivity : AppCompatActivity() {
 
         val id = intent.getLongExtra("CATEGORY_ID",-1)
         category = categoryDAO.findById(id)!!
-        taskList = taskDAO.findByCategoryId(category)
+        taskList = taskDAO.findAllByCategoryId(category)
 
         adapter = TaskAdapter(taskList, {
             //click on item
@@ -58,7 +61,22 @@ class TaskListActivity : AppCompatActivity() {
 
         supportActionBar?.title = category.title
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        //button to make task
+        binding.addTaskButton.setOnClickListener {
+            val intent = Intent(this, TaskCreatorActivity::class.java)
+            intent.putExtra("CATEGORY_ID",category.id)
+            startActivity(intent)
+        }
        }
+
+
+    //reload recycler
+    override fun onResume() {
+        super.onResume()
+        taskList
+    }
+
     //button for back
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
