@@ -70,13 +70,15 @@ class TaskListActivity : AppCompatActivity() {
         }
        }
 
-
     //reload recycler
     override fun onResume() {
         super.onResume()
-        taskList
+        reloadData()
     }
-
+    fun reloadData(){
+        taskList = taskDAO.findAllByCategoryId(category)
+        adapter.updateItems(taskList)
+    }
     //button for back
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
