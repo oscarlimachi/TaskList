@@ -2,6 +2,7 @@ package com.example.tasklist.activities
 
 
 import android.os.Bundle
+import android.view.MenuItem
 
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -43,16 +44,41 @@ class TaskCreatorActivity : AppCompatActivity() {
 
         val categoryId = intent.getLongExtra("CATEGORY_ID",-1)
 
+        val id = intent.getLongExtra("TASK_ID",-1)
         category = categoryDAO.findById(categoryId)!!
+
+        if (id == -1L){
+            task = Task(-1L,"",false,category)
+        } else{
+            task = taskDAO.findById(id)!!
+        }
+
+        binding.titleTaskEditText.setText(task.title)
+
         binding.saveButton.setOnClickListener {
             val title = binding.titleTaskEditText.text.toString()
-            task=Task(-1L,title,false,category)
-            taskDAO.insert(task)
+            task.title = title
+
+            if (task.id == -1L){
+                taskDAO.insert(task)
+
+            } else{
+                taskDAO.update(task)
+            }
             finish()
         }
         supportActionBar?.title = category.title
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 
+
     }
+
+    override fun onSupportNavigateUp(): Boolean {
+        finish()
+        return super.onSupportNavigateUp()
     }
+
+
+
+}

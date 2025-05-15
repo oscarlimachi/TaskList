@@ -51,8 +51,12 @@ class TaskListActivity : AppCompatActivity() {
         category = categoryDAO.findById(id)!!
         taskList = taskDAO.findAllByCategoryId(category)
 
-        adapter = TaskAdapter(taskList, {
-            //click on item
+        adapter = TaskAdapter(taskList, { position ->
+            val task = taskList[position]
+            val intent = Intent(this, TaskCreatorActivity::class.java)
+            intent.putExtra("CATEGORY_ID",category.id)
+            intent.putExtra("TASK_ID",task.id)
+            startActivity(intent)
         }, {
                 //click on checkbox
         })

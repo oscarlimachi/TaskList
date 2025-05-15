@@ -2,7 +2,7 @@ package com.example.tasklist.data
 
 class Task(
     val id: Long,
-    val title: String,
+    var title: String,
     val done: Boolean,
     val category: Category
 ){
