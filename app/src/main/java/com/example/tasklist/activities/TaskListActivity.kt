@@ -57,8 +57,12 @@ class TaskListActivity : AppCompatActivity() {
             intent.putExtra("CATEGORY_ID",category.id)
             intent.putExtra("TASK_ID",task.id)
             startActivity(intent)
-        }, {
-                //click on checkbox
+        }, {position ->
+            val task = taskList[position]
+            task.done = !task.done
+            taskDAO.update(task)
+            reloadData()
+
         })
         binding.recyclerview.adapter = adapter
         binding.recyclerview.layoutManager= LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false)

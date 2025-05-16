@@ -3,7 +3,7 @@ package com.example.tasklist.data
 class Task(
     val id: Long,
     var title: String,
-    val done: Boolean,
+    var done: Boolean,
     val category: Category
 ){
     companion object{

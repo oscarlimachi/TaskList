@@ -168,7 +168,7 @@ class TaskDAO(private val context: Context) {
                 null,
                 null,
                 null,
-                null,)
+                Task.COLUMN_NAME_DONE)
             while (cursor.moveToNext()){
                 val id = cursor.getLong(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_ID))
                 val title = cursor.getString(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_TITLE))
