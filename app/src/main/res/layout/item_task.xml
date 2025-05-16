@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:gravity="center_vertical"
     android:layout_margin="8dp">
@@ -12,10 +13,18 @@
     </CheckBox>
     <TextView
         android:id="@+id/TaskTextView"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
-        android:text="Tarea">
+        android:text="Lista de Tareas">
     </TextView>
+    <Button
+        style="?attr/materialIconButtonStyle"
+        android:id="@+id/menuButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon="@drawable/ic_menu_overflow">
+    </Button>
 
 </LinearLayout>

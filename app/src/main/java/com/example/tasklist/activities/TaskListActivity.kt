@@ -2,12 +2,16 @@ package com.example.tasklist.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.ContextMenu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Adapter
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -63,6 +67,33 @@ class TaskListActivity : AppCompatActivity() {
             taskDAO.update(task)
             reloadData()
 
+        },{ // si le da a los 3 puntos que hace
+            position, v ->
+            val popupMenu = PopupMenu(this,v)
+            popupMenu.inflate(R.menu.task_context_menu)
+            //id de las 2 opciones
+            popupMenu.setOnMenuItemClickListener{ menuItem : MenuItem ->
+                val task = taskList[position]
+                return@setOnMenuItemClickListener when(menuItem.itemId){
+                    R.id.actionEdit ->{
+                        val intent = Intent(this, TaskCreatorActivity::class.java)
+                        intent.putExtra("CATEGORY_ID",category.id)
+                        intent.putExtra("TASK_ID",task.id)
+                        startActivity(intent)
+                        true}
+                    R.id.actionDelete ->{
+                        Toast.makeText(this,"Borrar", Toast.LENGTH_SHORT).show()
+                        taskDAO.delete(task)
+                        reloadData()
+                        true}
+                    else -> super.onOptionsItemSelected(menuItem)
+                }
+
+
+
+            }
+            popupMenu.show()
+
         })
         binding.recyclerview.adapter = adapter
         binding.recyclerview.layoutManager= LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false)
@@ -83,7 +114,7 @@ class TaskListActivity : AppCompatActivity() {
         super.onResume()
         reloadData()
     }
-    fun reloadData(){
+        fun reloadData(){
         taskList = taskDAO.findAllByCategoryId(category)
         adapter.updateItems(taskList)
     }
@@ -97,4 +128,10 @@ class TaskListActivity : AppCompatActivity() {
             else -> return super.onOptionsItemSelected(item)
         }
     }
+    //menu flotante
+    override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        menuInflater.inflate(R.menu.task_context_menu,menu)
+    }
+
 }
