@@ -78,7 +78,4 @@ class TaskCreatorActivity : AppCompatActivity() {
         finish()
         return super.onSupportNavigateUp()
     }
-
-
-
 }
