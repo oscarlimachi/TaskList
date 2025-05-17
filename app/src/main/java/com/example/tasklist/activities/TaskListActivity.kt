@@ -1,21 +1,18 @@
 package com.example.tasklist.activities
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.ContextMenu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Adapter
-import android.widget.LinearLayout
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.tasklist.R
 import com.example.tasklist.adapters.TaskAdapter
 import com.example.tasklist.data.Category
@@ -55,19 +52,22 @@ class TaskListActivity : AppCompatActivity() {
         category = categoryDAO.findById(id)!!
         taskList = taskDAO.findAllByCategoryId(category)
 
-        adapter = TaskAdapter(taskList, { position ->
+        adapter = TaskAdapter(taskList, {
+            position ->
             val task = taskList[position]
             val intent = Intent(this, TaskCreatorActivity::class.java)
             intent.putExtra("CATEGORY_ID",category.id)
             intent.putExtra("TASK_ID",task.id)
             startActivity(intent)
-        }, {position ->
+        },
+            { position ->
             val task = taskList[position]
             task.done = !task.done
             taskDAO.update(task)
             reloadData()
 
-        },{ // si le da a los 3 puntos que hace
+        }, {
+          // si le da a los 3 puntos que hace
             position, v ->
             val popupMenu = PopupMenu(this,v)
             popupMenu.inflate(R.menu.task_context_menu)
@@ -88,11 +88,14 @@ class TaskListActivity : AppCompatActivity() {
                         true}
                     else -> super.onOptionsItemSelected(menuItem)
                 }
-
-
-
             }
-            popupMenu.show()
+                //if you want a red icon change to android -popupmenu
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    //show the icon
+                    popupMenu.setForceShowIcon(true)
+                }
+
+                popupMenu.show()
 
         })
         binding.recyclerview.adapter = adapter
@@ -102,7 +105,7 @@ class TaskListActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         //button to make task
-        binding.addTaskButton.setOnClickListener {
+        binding.addTaskButton.setOnClickListener{
             val intent = Intent(this, TaskCreatorActivity::class.java)
             intent.putExtra("CATEGORY_ID",category.id)
             startActivity(intent)
@@ -114,7 +117,8 @@ class TaskListActivity : AppCompatActivity() {
         super.onResume()
         reloadData()
     }
-        fun reloadData(){
+    //reload task list
+    fun reloadData(){
         taskList = taskDAO.findAllByCategoryId(category)
         adapter.updateItems(taskList)
     }
@@ -128,7 +132,7 @@ class TaskListActivity : AppCompatActivity() {
             else -> return super.onOptionsItemSelected(item)
         }
     }
-    //menu flotante
+    //floating menu
     override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
         super.onCreateContextMenu(menu, v, menuInfo)
         menuInflater.inflate(R.menu.task_context_menu,menu)
